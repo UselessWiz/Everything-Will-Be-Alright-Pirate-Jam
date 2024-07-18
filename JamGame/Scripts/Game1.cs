@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Engine.Global;
 
 namespace JamGame;
@@ -35,7 +36,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // Set the window size.
-        Globals.windowSize = new Point(640, 360);
+        Globals.windowSize = new Point(320, 240);
         _graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
         _graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
         _graphics.IsFullScreen = true;
@@ -59,7 +60,7 @@ public class Game1 : Game
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new TestScene(this);
+        currentScene = new InitialScene(this);
 
         base.Initialize();
     }
@@ -79,7 +80,9 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         // Exit the game if escape/back button is pressed.
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+            Exit();
+        }
 
         KeyboardExtended.SetState();
 

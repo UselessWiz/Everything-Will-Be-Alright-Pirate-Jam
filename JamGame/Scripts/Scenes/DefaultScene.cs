@@ -20,7 +20,7 @@ public class DefaultScene : IScene
 
 	public void LoadContent()
 	{
-		debugFont = Globals.contentManager.Load<SpriteFont>("DebugFont");
+		debugFont = gameManager.Content.Load<SpriteFont>("DebugFont");
 	}
 
 	public void Update(GameTime gameTime)
