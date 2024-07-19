@@ -80,7 +80,7 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         // Exit the game if escape/back button is pressed.
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+        if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
             Exit();
         }
 
