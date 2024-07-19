@@ -28,6 +28,7 @@ public class Animation
 
 	public Animation(int valueID, float minValue, float maxValue, float animLength)
 	{
+		this.valueID = valueID;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.animLength = animLength;

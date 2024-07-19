@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Input;
 using Engine.Global;
 
 namespace JamGame;
@@ -48,10 +49,20 @@ public class InitialScene : IScene
 				gameManager.SwitchScene(new BattleScene(gameManager));
 			}
 		}
+
+		// DEBUG ----------------------------------------------------
+		if (KeyboardExtended.KeyPressed(Keys.Space)) {
+			MediaPlayer.Stop();
+			gameManager.SwitchScene(new BattleScene(gameManager));
+		}
+		// ----------------------------------------------------------
 	}
 
 	public void Draw(SpriteBatch _spriteBatch)
 	{
+		// Clear this buffer.
+        gameManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+        
 		_spriteBatch.Begin();
 		screens[currentScreenIndex].Draw(_spriteBatch);
 		_spriteBatch.End();

@@ -29,7 +29,7 @@ public class CutsceneData
 
 		this.background = new Sprite(Vector2.Zero, spriteName, contentManager);
 
-		this.font = contentManager.Load<SpriteFont>("DebugFont");
+		this.font = contentManager.Load<SpriteFont>("Low Gothic Cutscene");
 	}
 
 	public void Update(GameTime gameTime)

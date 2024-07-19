@@ -99,9 +99,6 @@ public class Game1 : Game
         // Start by drawing to a render target at native resolution (typically small pixel art resolution).
         GraphicsDevice.SetRenderTarget(mainRenderTarget);
 
-        // Clear this buffer.
-        GraphicsDevice.Clear(Color.CornflowerBlue);
-
         // Draw all objects to the RenderTarget2D, which is used to scale from native resolution to screen/window resolution.
         currentScene.Draw(_spriteBatch);
 

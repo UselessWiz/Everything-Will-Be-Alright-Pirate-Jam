@@ -45,13 +45,11 @@ public class Sprite : Transform
 
     public void Draw(SpriteBatch _spriteBatch)
     {
-        // This doesn't need the spritePosition because the rectangle's position is the top left corner, same as the draw.
         _spriteBatch.Draw(spritesheet, position - new Vector2(spriteWidth / 2, spriteHeight / 2), currentSprite, Color.White); 
     }
 
     public void Draw(SpriteBatch _spriteBatch, Point selectedSprite) // This override is used mainly for selecting tiles off a tilemap.
     {
-        // This doesn't need the spritePosition because the rectangle's position is the top left corner, same as the draw.
         _spriteBatch.Draw(spritesheet, position - new Vector2(spriteWidth / 2, spriteHeight / 2), new Rectangle(new Point(spriteWidth, spriteHeight), selectedSprite), Color.White); 
     }
 
