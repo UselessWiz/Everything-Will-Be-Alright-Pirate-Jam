@@ -49,7 +49,6 @@ public class CutsceneData
 
 	public void DrawUI(SpriteBatch _spriteBatch)
 	{
-		Console.WriteLine(currentDialogueIndex);
 		if (currentDialogueIndex > -1 && currentDialogueIndex < dialogue.Length) {
 			_spriteBatch.DrawString(font, $"{dialogue[currentDialogueIndex]}", dialoguePositions[currentDialogueIndex], Color.Black);
 		}

@@ -16,13 +16,13 @@ public class BattleScene : IScene
 
 	private AnimationClip finalHealthBarAnimation;
 
-	private bool bossDefeated;
+	private bool bossDefeated = false;
 
 	public BattleScene(Game1 gameManager)
 	{
 		this.gameManager = gameManager;
 
-		//this.bossHealthBar = new HealthBar(new Vector2(155, 6), "Sprite/UI/HealthBarFG", 300, gameManager.Content);
+		this.bossHealthBar = new HealthBar(new Vector2(155, 6), "Sprite/UI/HealthBarFG", 300, gameManager.Content);
 
 		PrepareFinalHealthBars();
 
@@ -36,7 +36,11 @@ public class BattleScene : IScene
 
 	public void Update(GameTime gameTime)
 	{
-		if (bossDefeated) {
+		if (!bossDefeated) {
+			BossKilled();
+		}
+
+		else {
 			finalHealthBarAnimation.Update(gameTime);
 
 			for (int i = 0; i < 49; i++) {
@@ -55,7 +59,7 @@ public class BattleScene : IScene
 	public void DrawUI(SpriteBatch _spriteBatch)
 	{
 		_spriteBatch.Begin();
-		bossHealthBar.DrawUI(_spriteBatch);
+		//bossHealthBar.DrawUI(_spriteBatch);
 		_spriteBatch.End();
 
 		if (!bossDefeated) return;
