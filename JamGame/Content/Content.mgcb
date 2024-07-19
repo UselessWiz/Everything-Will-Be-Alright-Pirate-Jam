@@ -88,9 +88,3 @@
 /processorParam:TextureFormat=Color
 /build:Sprite/UI/HealthBarFG.png
 
-#begin Sprites/UI/HealthBarBG.png
-/copy:Sprites/UI/HealthBarBG.png
-
-#begin Sprites/UI/HealthBarFG.png
-/copy:Sprites/UI/HealthBarFG.png
-
