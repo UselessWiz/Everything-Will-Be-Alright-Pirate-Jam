@@ -53,14 +53,14 @@ public class Game1 : Game
         _graphics.ApplyChanges();
 
         // Set up the screen scaling initially.
-        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize);
+        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize); // NOTE - THIS MAY NEED TO BE REDONE FOR WEB BUILDS
 
         // Set the content manager globally.
         Globals.contentManager = Content;
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new InitialScene(this);
+        currentScene = new MenuScene(this);
 
         base.Initialize();
     }
