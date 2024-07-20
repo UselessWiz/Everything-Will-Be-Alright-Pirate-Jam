@@ -46,14 +46,18 @@ public class InitialScene : IScene
 
 			if (currentScreenIndex >= screens.Length) {
 				MediaPlayer.Stop();
-				gameManager.SwitchScene(new BattleScene(gameManager));
+				BattleScene battleScene = new BattleScene(gameManager);
+				battleScene.sceneTime = (float)gameTime.TotalGameTime.TotalSeconds;
+				gameManager.SwitchScene(battleScene);
 			}
 		}
 
 		// DEBUG ----------------------------------------------------
 		if (KeyboardExtended.KeyPressed(Keys.Space)) {
 			MediaPlayer.Stop();
-			gameManager.SwitchScene(new BattleScene(gameManager));
+			BattleScene battleScene = new BattleScene(gameManager);
+			battleScene.sceneTime = (float)gameTime.TotalGameTime.TotalSeconds;
+			gameManager.SwitchScene(battleScene);
 		}
 		// ----------------------------------------------------------
 	}

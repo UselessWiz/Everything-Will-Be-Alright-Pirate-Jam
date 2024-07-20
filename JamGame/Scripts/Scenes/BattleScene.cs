@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Engine.Global;
 using Engine.Animations;
+using System;
 
 namespace JamGame;
 
@@ -11,6 +12,13 @@ public class BattleScene : IScene
 	public Game1 gameManager {get; set;}
 	private SpriteFont debugFont;
 
+	private Player player;
+	private Enemy enemy;
+	private Lazer lazer;
+	private Camera camera;
+
+	public float lightStrength; // This is used by the light shader (i hope).
+
 	private HealthBar bossHealthBar;
 	private HealthBar[] finalHealthBars;
 
@@ -18,11 +26,18 @@ public class BattleScene : IScene
 
 	private bool bossDefeated = false;
 
+	public float sceneTime;
+
 	public BattleScene(Game1 gameManager)
 	{
 		this.gameManager = gameManager;
 
 		this.bossHealthBar = new HealthBar(new Vector2(155, 6), "Sprite/UI/HealthBarFG", 300, gameManager.Content);
+
+		this.lazer = new Lazer(gameManager.Content);
+		this.enemy = new Enemy(this, bossHealthBar, gameManager.Content);
+		this.player = new Player(this, lazer, enemy, gameManager.Content);
+		this.camera = new Camera();
 
 		PrepareFinalHealthBars();
 
@@ -37,7 +52,13 @@ public class BattleScene : IScene
 	public void Update(GameTime gameTime)
 	{
 		if (!bossDefeated) {
-			BossKilled();
+			player.Update(gameTime);
+			lazer.Update(gameTime);
+
+			camera.position = player.position;
+			camera.Update(gameTime);
+
+			Console.WriteLine(bossHealthBar.currentValue);
 		}
 
 		else {
@@ -54,12 +75,19 @@ public class BattleScene : IScene
 	{
 		// Clear this buffer.
         gameManager.GraphicsDevice.Clear(Color.Black);
+
+        _spriteBatch.Begin(transformMatrix: camera.translation);
+        enemy.Draw(_spriteBatch);
+        lazer.Draw(_spriteBatch);
+        player.Draw(_spriteBatch);
+
+        _spriteBatch.End();
 	}
 
 	public void DrawUI(SpriteBatch _spriteBatch)
 	{
 		_spriteBatch.Begin();
-		//bossHealthBar.DrawUI(_spriteBatch);
+		bossHealthBar.DrawUI(_spriteBatch);
 		_spriteBatch.End();
 
 		if (!bossDefeated) return;

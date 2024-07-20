@@ -60,7 +60,7 @@ public class Game1 : Game
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new MenuScene(this);
+        currentScene = new BattleScene(this);//currentScene = new MenuScene(this);
 
         base.Initialize();
     }
@@ -111,7 +111,7 @@ public class Game1 : Game
         // Draw the RenderTarget managed above to the screen at the correct resolution.
         GraphicsDevice.Clear(Color.Black);
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-//
+
         // Prepare for scaling, then draw debug info above the render target at native resolution.
         _spriteBatch.Draw(mainRenderTarget, upscaledDrawTarget, Color.White);
         currentScene.DrawDebug(gameTime);
