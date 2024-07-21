@@ -66,6 +66,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Monogram.spritefont
 
+#begin Shaders/Arena Lighting.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/Arena Lighting.fx
+
 #begin Sprite/Enemy.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -137,10 +143,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Sprite/UI/HealthBarFG.png
-
-#begin Sprites/UI/HealthBarBG.png
-/copy:Sprites/UI/HealthBarBG.png
-
-#begin Sprites/UI/HealthBarFG.png
-/copy:Sprites/UI/HealthBarFG.png
 

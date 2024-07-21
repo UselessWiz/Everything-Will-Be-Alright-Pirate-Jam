@@ -112,14 +112,12 @@ public class Player : Sprite
 			if (uA > 0 && uA <= 1 && uB > 0 && uB <= 1) intersecting = true;
 		}
 
-		Console.WriteLine(intersecting);
-
 		if (intersecting) enemy.TakeDamage();
 	}
 
 	public void TakeDamage()
 	{
-		scene.lightStrength = scene.lightStrength / 2;
+		scene.lightStrength = scene.lightStrength * 0.75f;
 	}
 
 	private Vector2 GetDirection()

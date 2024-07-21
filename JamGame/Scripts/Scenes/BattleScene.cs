@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 using Engine.Global;
 using Engine.Animations;
 using System;
@@ -17,7 +18,12 @@ public class BattleScene : IScene
 	private Lazer lazer;
 	private Camera camera;
 
-	public float lightStrength; // This is used by the light shader (i hope).
+	private Effect lightShader;
+	private LightSource[] lights;
+	private VertexPosition[] screenRectVertices;
+	private short[] indices;
+
+	public float lightStrength = 20f; // This is used by the light shader (i hope).
 
 	private HealthBar bossHealthBar;
 	private HealthBar[] finalHealthBars;
@@ -39,6 +45,22 @@ public class BattleScene : IScene
 		this.player = new Player(this, lazer, enemy, gameManager.Content);
 		this.camera = new Camera();
 
+		this.lights = new LightSource[] {
+			new LightSource(new Vector2(50, 10), 1f),
+			new LightSource(new Vector2(50, 230), 1f),
+			new LightSource(new Vector2(270, 10), 1f),
+			new LightSource(new Vector2(270, 230), 1f)
+		};
+
+		this.screenRectVertices = new VertexPosition[] {
+        	new VertexPosition(new Vector3(-Globals.windowSize.X / 2, -Globals.windowSize.Y / 2, 0)), 
+        	new VertexPosition(new Vector3(Globals.windowSize.X / 2, -Globals.windowSize.Y / 2, 0)), 
+			new VertexPosition(new Vector3(Globals.windowSize.X / 2, Globals.windowSize.Y / 2, 0)), 
+			new VertexPosition(new Vector3(-Globals.windowSize.X / 2, Globals.windowSize.Y / 2, 0))
+		};
+
+		this.indices = new short[] {0, 1, 2, 0, 2, 3};
+
 		PrepareFinalHealthBars();
 
 		LoadContent();
@@ -47,6 +69,7 @@ public class BattleScene : IScene
 	public void LoadContent()
 	{
 		debugFont = gameManager.Content.Load<SpriteFont>("DebugFont");
+		lightShader = gameManager.Content.Load<Effect>("Shaders/Arena Lighting");
 	}
 
 	public void Update(GameTime gameTime)
@@ -58,7 +81,7 @@ public class BattleScene : IScene
 			camera.position = player.position;
 			camera.Update(gameTime);
 
-			Console.WriteLine(bossHealthBar.currentValue);
+			if (KeyboardExtended.KeyPressed(Keys.Space)) player.TakeDamage();
 		}
 
 		else {
@@ -74,6 +97,7 @@ public class BattleScene : IScene
 	public void Draw(SpriteBatch _spriteBatch)
 	{
 		// Clear this buffer.
+		gameManager.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
         gameManager.GraphicsDevice.Clear(Color.Black);
 
         _spriteBatch.Begin(transformMatrix: camera.translation);
@@ -82,6 +106,34 @@ public class BattleScene : IScene
         player.Draw(_spriteBatch);
 
         _spriteBatch.End();
+
+        // Draw the lights
+        gameManager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
+        lightShader.Parameters["WorldViewProjection"].SetValue(camera.translation * 
+        	Matrix.CreateOrthographicOffCenter(0, Globals.windowSize.X, Globals.windowSize.Y, 0, 0, -1));
+
+        gameManager.GraphicsDevice.BlendState = BlendState.Additive;
+
+        // Prepare the light shader.
+		VertexBuffer vertexBuffer = new VertexBuffer(gameManager.GraphicsDevice, typeof(VertexPosition), 6, BufferUsage.WriteOnly);
+        vertexBuffer.SetData<VertexPosition>(screenRectVertices);
+		gameManager.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+
+		IndexBuffer indexBuffer = new IndexBuffer(Globals.graphicsDevice, typeof(short), indices.Length, BufferUsage.WriteOnly);
+		indexBuffer.SetData(indices);
+		gameManager.GraphicsDevice.Indices = indexBuffer;
+
+        foreach (LightSource light in lights) {
+        	lightShader.Parameters["LightPosition"].SetValue(light.position - camera.position);
+			lightShader.Parameters["LightBrightness"].SetValue(lightStrength);
+
+			foreach (EffectPass pass in lightShader.CurrentTechnique.Passes)
+        	{
+            	pass.Apply();
+            	gameManager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 2);
+        	}
+        }
 	}
 
 	public void DrawUI(SpriteBatch _spriteBatch)
