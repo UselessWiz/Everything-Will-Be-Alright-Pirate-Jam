@@ -103,7 +103,7 @@ public class Game1 : Game
         currentScene.Draw(_spriteBatch);
 
         // Draw the UI elements above the main game elements.
-        //currentScene.DrawUI(_uiSpriteBatch);
+        currentScene.DrawUI(_uiSpriteBatch);
 
         // Prepare to draw to the actual window.
         GraphicsDevice.SetRenderTarget(null);

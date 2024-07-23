@@ -118,6 +118,8 @@ public class Player : Sprite
 	public void TakeDamage()
 	{
 		scene.lightStrength = scene.lightStrength * 0.75f;
+
+		if (scene.lightStrength < 0.1f) scene.lightStrength = 0.1f; // TEST THIS NUMBER.
 	}
 
 	private Vector2 GetDirection()
