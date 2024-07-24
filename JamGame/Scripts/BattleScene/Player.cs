@@ -20,8 +20,13 @@ public class Player : Sprite
 
 	public bool chargingAttack = false;
 
+	public bool damaged = false;
+
 	public float attackCooldown = 3.0f;
 	private float attackCooldownFinished;
+
+	public float invlunCooldown = 1.5f;
+	private float invlunCooldownFinished;
 
 	public Player(BattleScene scene, Lazer lazer, Enemy enemy, ContentManager contentManager) : base(Vector2.Zero, "Sprite/Player", contentManager)
 	{
@@ -31,7 +36,8 @@ public class Player : Sprite
 		this.enemy = enemy;
 
 		this.attackCooldownFinished = scene.sceneTime;
-		this.collider = new RectangleCollider(this, new Point(3, 3), new Point(14, 14)); 
+		this.invlunCooldownFinished = scene.sceneTime + 5f;
+		this.collider = new RectangleCollider(this, new Point(-7, -7), new Point(14, 14)); 
 	}	
 
 	public void Update(GameTime gameTime)
@@ -40,6 +46,25 @@ public class Player : Sprite
 		if (direction != Vector2.Zero) Vector2.Normalize(direction);
 
 		position += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+		collider.UpdateCollider();
+
+		if (collider.CheckForCollision(enemy.collider))	Console.WriteLine("hit");
+
+		if ((float)gameTime.TotalGameTime.TotalSeconds >= invlunCooldownFinished) {
+			if (collider.CollisionEntered(enemy.collider, gameTime)) {
+				TakeDamage();
+				Console.WriteLine("damaged by enemy charge");
+				invlunCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + invlunCooldown;
+			}
+	
+			for (int i = 0; i < enemy.spines.Count; i++) {
+				if (collider.CollisionEntered(enemy.spines[i].collider, gameTime)) {
+					TakeDamage();
+					invlunCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + invlunCooldown;
+				}
+			}
+		}
 
 		MouseState mouseState = Mouse.GetState();
 
@@ -53,7 +78,7 @@ public class Player : Sprite
 		lazer.CalculatePosition(line);
 
 		// Make sure charging doesn't happen all the time, reset visuals of charging.
-		if (mouseState.LeftButton == ButtonState.Released && chargingAttack) {
+		if ((mouseState.LeftButton == ButtonState.Released || direction != Vector2.Zero) && chargingAttack) {
 			chargingAttack = false;
 			uniformLazerStrength = 0f;
 		}
@@ -79,6 +104,8 @@ public class Player : Sprite
 
 	private void Attack(Vector2 line)
 	{
+		line *= 200f;
+
 		Vector2[] points = new Vector2[6];
 
 		float uA = 0;
@@ -112,12 +139,16 @@ public class Player : Sprite
 			if (uA > 0 && uA <= 1 && uB > 0 && uB <= 1) intersecting = true;
 		}
 
+		Console.WriteLine(intersecting);
+
 		if (intersecting) enemy.TakeDamage();
 	}
 
 	public void TakeDamage()
 	{
 		scene.lightStrength = scene.lightStrength * 0.75f;
+
+		if (scene.lightStrength < 0.5f) scene.lightStrength = 0.5f; // TEST THIS NUMBER.
 	}
 
 	private Vector2 GetDirection()
