@@ -53,14 +53,14 @@ public class Game1 : Game
         _graphics.ApplyChanges();
 
         // Set up the screen scaling initially.
-        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize);
+        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize); // NOTE - THIS MAY NEED TO BE REDONE FOR WEB BUILDS
 
         // Set the content manager globally.
         Globals.contentManager = Content;
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new InitialScene(this);
+        currentScene = new BattleScene(this);//currentScene = new MenuScene(this);
 
         base.Initialize();
     }
@@ -103,7 +103,7 @@ public class Game1 : Game
         currentScene.Draw(_spriteBatch);
 
         // Draw the UI elements above the main game elements.
-        currentScene.DrawUI(_uiSpriteBatch);
+        //currentScene.DrawUI(_uiSpriteBatch);
 
         // Prepare to draw to the actual window.
         GraphicsDevice.SetRenderTarget(null);
@@ -111,7 +111,7 @@ public class Game1 : Game
         // Draw the RenderTarget managed above to the screen at the correct resolution.
         GraphicsDevice.Clear(Color.Black);
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-//
+
         // Prepare for scaling, then draw debug info above the render target at native resolution.
         _spriteBatch.Draw(mainRenderTarget, upscaledDrawTarget, Color.White);
         currentScene.DrawDebug(gameTime);

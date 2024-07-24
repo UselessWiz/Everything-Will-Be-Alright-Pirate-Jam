@@ -39,13 +39,18 @@
     <Compile Include="Engine\Tilemap\TilemapSprite.cs" />
     <Compile Include="Pages\Index.razor.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Scripts\BattleScene\Enemy.cs" />
     <Compile Include="Scripts\BattleScene\HealthBar.cs" />
+    <Compile Include="Scripts\BattleScene\Lazer.cs" />
+    <Compile Include="Scripts\BattleScene\Player.cs" />
     <Compile Include="Scripts\Game1.cs" />
     <Compile Include="Scripts\InitialScene\CutsceneData.cs" />
+    <Compile Include="Scripts\Lighting\LightSource.cs" />
     <Compile Include="Scripts\Scenes\BattleScene.cs" />
     <Compile Include="Scripts\Scenes\DefaultScene.cs" />
     <Compile Include="Scripts\Scenes\InitialScene.cs" />
     <Compile Include="Scripts\Scenes\IScene.cs" />
+    <Compile Include="Scripts\Scenes\MenuScene.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,9 +73,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.2" PrivateAssets="all" />
   </ItemGroup>
-
   <ItemGroup>
-    <KniContentReference Include="Content\JamGameContent.mgcb" />
+    <Folder Include="Content\bin\DesktopGL\Content\Sprites\UI\" />
+    <Folder Include="Content\bin\DesktopGL\Sprites\UI\" />
   </ItemGroup>
 
 </Project>
