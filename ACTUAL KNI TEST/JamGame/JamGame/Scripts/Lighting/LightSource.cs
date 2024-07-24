@@ -15,6 +15,11 @@ public class LightSource : Transform
 		this.brightness = brightness;
 	}
 
+	public void Draw(Effect lightShader)
+	{
+
+	}
+
 	// CHANGE THE SHADER
 	public VertexPosition PrepareVertexData(int zCoord)
 	{

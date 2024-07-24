@@ -43,6 +43,7 @@
     <Compile Include="Scripts\BattleScene\HealthBar.cs" />
     <Compile Include="Scripts\BattleScene\Lazer.cs" />
     <Compile Include="Scripts\BattleScene\Player.cs" />
+    <Compile Include="Scripts\BattleScene\Spine.cs" />
     <Compile Include="Scripts\Game1.cs" />
     <Compile Include="Scripts\InitialScene\CutsceneData.cs" />
     <Compile Include="Scripts\Lighting\LightSource.cs" />
