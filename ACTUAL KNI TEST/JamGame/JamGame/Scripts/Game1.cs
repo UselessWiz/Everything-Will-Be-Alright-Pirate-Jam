@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Engine.Global;
+using System;
 
 namespace JamGame;
 
@@ -37,14 +38,16 @@ public class Game1 : Game
     {
         // Set the window size.
         Globals.windowSize = new Point(320, 240);
-        _graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
-        _graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
-        _graphics.IsFullScreen = true;
+        _graphics.PreferredBackBufferWidth = 1280;
+        _graphics.PreferredBackBufferHeight = 960;
+        _graphics.IsFullScreen = false;
+
+        Console.WriteLine(_graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width);
 
         mainRenderTarget = new RenderTarget2D(GraphicsDevice, Globals.windowSize.X, Globals.windowSize.Y, 
             false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
 
-        this._graphics.SynchronizeWithVerticalRetrace = true;
+        this._graphics.SynchronizeWithVerticalRetrace = false;
 
         // Unlock Framerate.
         Globals.targetFPS = 120;
@@ -60,7 +63,7 @@ public class Game1 : Game
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new BattleScene(this);//currentScene = new MenuScene(this);
+        currentScene = currentScene = new MenuScene(this);
 
         base.Initialize();
     }
@@ -83,6 +86,8 @@ public class Game1 : Game
         if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
             Exit();
         }
+
+        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize);
 
         KeyboardExtended.SetState();
 

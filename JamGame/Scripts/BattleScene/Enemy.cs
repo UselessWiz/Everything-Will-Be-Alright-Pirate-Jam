@@ -14,7 +14,7 @@ public class Enemy : Sprite
 
 	public RectangleCollider collider;
 
-	public float speed = 2f;
+	public float speed = 300f;
 	public int health = 6;
 	private HealthBar healthBar;
 
@@ -48,10 +48,10 @@ public class Enemy : Sprite
 		//Console.WriteLine($"{gameTime.TotalGameTime.TotalSeconds} - {attackCooldownFinished}");
 
 		if (!charging) {
-			position = scene.camera.position + screenOffset;// + new Vector2(random.Next(-1, 1), random.Next(-1, 1));
+			position = scene.camera.position + screenOffset+ new Vector2(random.Next(-1, 1), random.Next(-1, 1));
 		}
 		else {
-			position += speed * new Vector2(0, 1);
+			position += speed * new Vector2(0, 1) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 		}
 
 		collider.UpdateTrigger();

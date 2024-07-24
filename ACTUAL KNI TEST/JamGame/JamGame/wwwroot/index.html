@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>JamGame</title>
     <base href="./" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
@@ -88,6 +88,23 @@
             
             // begin game loop
             window.requestAnimationFrame(tickJS);
+
+            //var windowWidth = window.innerWidth;
+            //var windowHeight = window.innerHeight;
+            //var containerAspectRatio = 640 / 480.0;
+//
+            //if (windowWidth / windowHeight > containerAspectRatio) {
+            //    canvas.style.width = windowHeight * containerAspectRatio + "px";
+            //    canvas.style.height = "100vh";
+            //} else {
+            //    canvas.style.width = "100vw";
+            //    canvas.style.height = windowWidth / containerAspectRatio + "px";
+            //}
+            //canvas.style.margin = "auto";
+            //canvas.style.top = "0";
+            //canvas.style.left = "0";
+            //canvas.style.bottom = "0";
+            //canvas.style.right = "0";
         };
 
         window.onkeydown = function(event)

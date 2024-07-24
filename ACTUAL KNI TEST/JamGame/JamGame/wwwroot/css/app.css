@@ -76,6 +76,7 @@ a, .btn-link
 
 #theCanvas 
 {
+    display: block;
     position: fixed;
     top: 0px;
     right: 0px;

@@ -84,6 +84,8 @@ public class Game1 : Game
             Exit();
         }
 
+        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize);
+
         KeyboardExtended.SetState();
 
         // Perform all game update logic

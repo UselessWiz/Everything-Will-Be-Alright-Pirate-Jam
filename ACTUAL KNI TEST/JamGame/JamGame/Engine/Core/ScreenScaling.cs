@@ -11,7 +11,7 @@ public class ScreenScaling
 
 	public static Point BestResolution(GraphicsDevice graphicsDevice, int PreferredBackBufferHeight, Point windowSize)
     {
-        scale = PreferredBackBufferHeight / windowSize.Y;
+        scale = 4;
 
         // If there is any issues with scaling (particularly for displays that aren't the same aspect ratio as the internal resolution).
         if (scale * windowSize.X > graphicsDevice.Adapter.CurrentDisplayMode.Width || 
@@ -24,8 +24,7 @@ public class ScreenScaling
 
     public static Point BestRenderTargetDrawLocation(GraphicsDevice graphicsDevice, Point bestResolution)
     {
-        topLeft = new Point((graphicsDevice.Adapter.CurrentDisplayMode.Width - bestResolution.X) / 2, 
-            (graphicsDevice.Adapter.CurrentDisplayMode.Height - bestResolution.Y) / 2);
+        topLeft = new Point(320, 200);
         return topLeft;
     }
 
