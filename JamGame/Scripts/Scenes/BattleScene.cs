@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Input;
 using Engine.Global;
 using Engine.Animations;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace JamGame;
 
@@ -13,17 +15,19 @@ public class BattleScene : IScene
 	public Game1 gameManager {get; set;}
 	private SpriteFont debugFont;
 
-	private Player player;
+	public Player player;
 	private Enemy enemy;
 	private Lazer lazer;
-	private Camera camera;
+	public Camera camera;
 
 	private Effect lightShader;
 	private LightSource[] lights;
 	private VertexPosition[] screenRectVertices;
 	private short[] indices;
 
-	public float lightStrength = 20f; // This is used by the light shader (i hope).
+	public float lightStrength = 20f;
+
+	private Effect lazerShader;
 
 	private HealthBar bossHealthBar;
 	private HealthBar[] finalHealthBars;
@@ -38,7 +42,7 @@ public class BattleScene : IScene
 	{
 		this.gameManager = gameManager;
 
-		this.bossHealthBar = new HealthBar(new Vector2(155, 6), "Sprite/UI/HealthBarFG", 300, gameManager.Content);
+		this.bossHealthBar = new HealthBar(new Vector2(160, 6), "Sprite/UI/HealthBarFG", 300, gameManager.Content);
 
 		this.lazer = new Lazer(gameManager.Content);
 		this.enemy = new Enemy(this, bossHealthBar, gameManager.Content);
@@ -70,15 +74,17 @@ public class BattleScene : IScene
 	{
 		debugFont = gameManager.Content.Load<SpriteFont>("DebugFont");
 		lightShader = gameManager.Content.Load<Effect>("Shaders/Arena Lighting");
+		lazerShader = gameManager.Content.Load<Effect>("Shaders/Lazer");
 	}
 
 	public void Update(GameTime gameTime)
 	{
 		if (!bossDefeated) {
 			player.Update(gameTime);
+			enemy.Update(gameTime);
 			lazer.Update(gameTime);
 
-			camera.position = player.position;
+			camera.position = player.position + new Vector2(0, -50);
 			camera.Update(gameTime);
 
 			if (KeyboardExtended.KeyPressed(Keys.Space)) player.TakeDamage();
@@ -96,15 +102,31 @@ public class BattleScene : IScene
 
 	public void Draw(SpriteBatch _spriteBatch)
 	{
+		// Yeah yeah this is bad code yada yada don't care.
+		List<Spine> spines = enemy.spines;
+
 		// Clear this buffer.
 		gameManager.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
         gameManager.GraphicsDevice.Clear(Color.Black);
 
+        // Draw the enemy
         _spriteBatch.Begin(transformMatrix: camera.translation);
         enemy.Draw(_spriteBatch);
-        lazer.Draw(_spriteBatch);
-        player.Draw(_spriteBatch);
+        _spriteBatch.End();
 
+        // Prepare the lazer shader and draw the lazer using it.
+        lazerShader.Parameters["LazerStrength"].SetValue(player.uniformLazerStrength);
+        _spriteBatch.Begin(transformMatrix: camera.translation, effect: lazerShader);
+        lazer.Draw(_spriteBatch);
+        _spriteBatch.End();
+
+        // Draw the player and spines. They use the same effects (base sprite).
+        _spriteBatch.Begin(transformMatrix: camera.translation);
+        player.Draw(_spriteBatch);
+        
+        for (int i = 0; i < spines.Count; i++) {
+        	spines[i].Draw(_spriteBatch);
+        }
         _spriteBatch.End();
 
         // Draw the lights
@@ -177,15 +199,15 @@ public class BattleScene : IScene
     	Vector2[] finalHealthBarPositions = new Vector2[49];
 
     	// Set up positions and offsets for each healthbar
-    	for (int i = 0; i < 24; i++) {
-    		finalHealthBarPositions[i] = new Vector2(155, 10 * i);
+    	for (int i = 0; i < 25; i++) {
+    		finalHealthBarPositions[i] = new Vector2(160, 10 * i);
     	}
 
-    	for (int i = 24; i < 48; i++) {
-			finalHealthBarPositions[i] = new Vector2(155, (10 * (i - 24)) - 5);
+    	for (int i = 25; i < 48; i++) {
+			finalHealthBarPositions[i] = new Vector2(160, (10 * (i - 24)) - 5);
     	}
 
-    	finalHealthBarPositions[48] = new Vector2(155, 245);
+    	finalHealthBarPositions[48] = new Vector2(160, 245);
 
     	// Set up the animation data
     	float[] keyframeTimes = new float[49];
@@ -199,7 +221,7 @@ public class BattleScene : IScene
     	}
 
     	// Create the animation
-    	this.finalHealthBarAnimation = new AnimationClip(49, keyframeTimes, keyframeData, 25f, true); 
+    	this.finalHealthBarAnimation = new AnimationClip(49, keyframeTimes, keyframeData, 24.5f, true); 
     }
 
     public void BossKilled()

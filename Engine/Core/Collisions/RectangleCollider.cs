@@ -8,7 +8,7 @@ namespace Engine.Core;
 public class RectangleCollider //: Collider
 {
 	// I'm not sure I like that this has a transform. The position could be updated from the other object, with an offset applied?
-	Transform transform;
+	public Transform transform;
 
 	// Collision Variables
     private Point colliderOffset;                   // (0, 0) is the top left pixel of the sprite.
