@@ -36,7 +36,7 @@ public class Sprite : Transform
         this.currentSprite = new Rectangle(0, 0, spriteWidth, spriteHeight);
     } 
 
-    private Texture2D LoadContent(ContentManager contentManager, string spriteName)
+    protected Texture2D LoadContent(ContentManager contentManager, string spriteName)
     {
         Texture2D texture = contentManager.Load<Texture2D>(spriteName);
         this.spritesheet = texture;

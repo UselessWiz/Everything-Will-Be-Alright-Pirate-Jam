@@ -18,16 +18,17 @@ public class Enemy : Sprite
 	public int health = 6;
 	private HealthBar healthBar;
 
-	private Vector2 screenOffset;
+	public Vector2 screenOffset;
 
 	private int attackIndex = 0;
 
-	private bool charging = false;
+	public bool charging = false;
 
 	public float attackCooldown = 3.0f;
 	private float attackCooldownFinished;
 
 	public List<Spine> spines;
+	public EnemySides[] sides;
 
 	public Enemy(BattleScene scene, HealthBar healthBar, ContentManager contentManager) : base(Vector2.Zero, "Sprite/Enemy", contentManager)
 	{
@@ -37,6 +38,7 @@ public class Enemy : Sprite
 		this.collider = new RectangleCollider(this, new Point(-17, -17), new Point(34, 34));
 
 		this.spines = new List<Spine>();
+		this.sides = new EnemySides[] {new EnemySides(this, true), new EnemySides(this, false)};
 
 		this.screenOffset = new Vector2(0, -100);
 	}	
@@ -48,10 +50,14 @@ public class Enemy : Sprite
 		//Console.WriteLine($"{gameTime.TotalGameTime.TotalSeconds} - {attackCooldownFinished}");
 
 		if (!charging) {
-			position = scene.camera.position + screenOffset+ new Vector2(random.Next(-1, 1), random.Next(-1, 1));
+			position = scene.camera.position + screenOffset + new Vector2(random.Next(-1, 1), random.Next(-1, 1));
 		}
 		else {
 			position += speed * new Vector2(0, 1) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+		}
+
+		for (int i = 0; i < sides.Length; i++) {
+			sides[i].Update(gameTime);
 		}
 
 		collider.UpdateTrigger();
@@ -83,6 +89,11 @@ public class Enemy : Sprite
 				charging = true;
 				attackIndex += 1;
 				attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + 2f;
+
+				for (int i = 0; i < sides.Length; i++) {
+					sides[i].direction = Vector2.Normalize(scene.player.position - sides[i].position);
+				}
+				
 				break; 
 			case 1: // Dummy to reset charge
 				charging = false;
@@ -129,7 +140,6 @@ public class Enemy : Sprite
 		health -= 1;
 		healthBar.currentValue -= 50;
 		healthBar.currentSprite = healthBar.ChangeHealthBarValue(healthBar.currentValue);
-		Console.WriteLine(health);
 
 		if (health == 0) {
 			scene.BossKilled();

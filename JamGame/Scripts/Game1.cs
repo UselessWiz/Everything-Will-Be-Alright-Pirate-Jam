@@ -10,7 +10,7 @@ public class Game1 : Game
 {
     private IScene currentScene;
 
-    private GraphicsDeviceManager _graphics;
+    public GraphicsDeviceManager _graphics;
 
     // Sprite Batches
     private SpriteBatch _spriteBatch;
@@ -19,7 +19,7 @@ public class Game1 : Game
     // Render Targets
     public RenderTarget2D mainRenderTarget;
 
-    private Rectangle upscaledDrawTarget;
+    public Rectangle upscaledDrawTarget;
 
     private SpriteFont testFont;
 
@@ -60,7 +60,7 @@ public class Game1 : Game
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new BattleScene(this);//currentScene = new MenuScene(this);
+        currentScene = new MenuScene(this);//currentScene = new MenuScene(this);
 
         base.Initialize();
     }
@@ -84,7 +84,7 @@ public class Game1 : Game
             Exit();
         }
 
-        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize);
+        //upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize);
 
         KeyboardExtended.SetState();
 
@@ -125,5 +125,13 @@ public class Game1 : Game
     public void SwitchScene(IScene scene)
     {
         currentScene = scene;
+    }
+
+    public void ChangeResolution(Point windowSize)
+    {
+        Globals.windowSize = windowSize;
+        mainRenderTarget = new RenderTarget2D(GraphicsDevice, windowSize.X, windowSize.Y, 
+            false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
+        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, windowSize);
     }
 }

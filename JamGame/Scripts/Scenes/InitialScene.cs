@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
 using Engine.Global;
 
@@ -15,26 +15,37 @@ public class InitialScene : IScene
 	private CutsceneData[] screens;
 	private int currentScreenIndex = 0;
 
-	protected Song backgroundMusic;
+	protected SoundEffect backgroundMusic;
+	private SoundEffectInstance musicPlayer;
 
 	public InitialScene(Game1 gameManager)
 	{
 		this.gameManager = gameManager;
 
+		gameManager.ChangeResolution(new Point(1280, 960));
+
 		this.screens = new CutsceneData[] { // Define them in here
-			new CutsceneData("Backgrounds/Bedroom1", new string[] {"Humans have souls.", "These are the culmination of their being."}, 
-				new Vector2[] {new Vector2(10, 20), new Vector2(140, 200)}, new float[] {2f, 6f, 10f}, gameManager.Content)
+			new CutsceneData("Backgrounds/Hands1", 
+				new string[] {"Eventually, once people connect closely enough with others...", "... their souls and shadows combine."}, 
+				new Vector2[] {new Vector2(90, 100), new Vector2(680, 850)}, new Color[] {Color.Black, Color.Black}, 
+				new float[] {2f, 6f, 10f}, gameManager.Content),
+			new CutsceneData("Backgrounds/Hands2",
+				new string[] {"On its own, a person's shadow feeds back their own negativity.", 
+					"But when shadows combine, the fears the combined souls share are\namplified beyond the negativity of any one person."},
+				new Vector2[] {new Vector2(40, 120), new Vector2(100, 880)}, new Color[] {Color.Black, Color.White}, 
+				new float[] {12f, 18f, 24f}, gameManager.Content)
 		};
 
 		LoadContent();
 
-		MediaPlayer.Play(backgroundMusic);
+		musicPlayer = backgroundMusic.CreateInstance();
+		musicPlayer.Play();
 	}
 
 	public void LoadContent()
 	{
 		debugFont = gameManager.Content.Load<SpriteFont>("DebugFont");
-		backgroundMusic = gameManager.Content.Load<Song>("Audio/CutsceneBGM");
+		backgroundMusic = gameManager.Content.Load<SoundEffect>("Audio/CutsceneBGM");
 	}
 
 	public void Update(GameTime gameTime)
@@ -45,7 +56,7 @@ public class InitialScene : IScene
 			currentScreenIndex += 1;
 
 			if (currentScreenIndex >= screens.Length) {
-				MediaPlayer.Stop();
+				musicPlayer.Stop();
 				BattleScene battleScene = new BattleScene(gameManager);
 				battleScene.sceneTime = (float)gameTime.TotalGameTime.TotalSeconds;
 				gameManager.SwitchScene(battleScene);
@@ -54,7 +65,7 @@ public class InitialScene : IScene
 
 		// DEBUG ----------------------------------------------------
 		if (KeyboardExtended.KeyPressed(Keys.Space)) {
-			MediaPlayer.Stop();
+			musicPlayer.Stop();
 			BattleScene battleScene = new BattleScene(gameManager);
 			battleScene.sceneTime = (float)gameTime.TotalGameTime.TotalSeconds;
 			gameManager.SwitchScene(battleScene);

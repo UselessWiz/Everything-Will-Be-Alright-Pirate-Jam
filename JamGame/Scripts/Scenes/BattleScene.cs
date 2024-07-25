@@ -42,6 +42,8 @@ public class BattleScene : IScene
 	{
 		this.gameManager = gameManager;
 
+		gameManager.ChangeResolution(new Point(320, 240));
+
 		this.bossHealthBar = new HealthBar(new Vector2(160, 6), "Sprite/UI/HealthBarFG", 300, gameManager.Content);
 
 		this.lazer = new Lazer(gameManager.Content);
@@ -112,6 +114,9 @@ public class BattleScene : IScene
         // Draw the enemy
         _spriteBatch.Begin(transformMatrix: camera.translation);
         enemy.Draw(_spriteBatch);
+        for (int i = 0; i < enemy.sides.Length; i++) {
+			enemy.sides[i].Draw(_spriteBatch);
+		}
         _spriteBatch.End();
 
         // Prepare the lazer shader and draw the lazer using it.

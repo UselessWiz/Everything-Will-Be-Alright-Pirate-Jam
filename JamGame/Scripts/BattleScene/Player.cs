@@ -49,12 +49,9 @@ public class Player : Sprite
 
 		collider.UpdateCollider();
 
-		if (collider.CheckForCollision(enemy.collider))	Console.WriteLine("hit");
-
 		if ((float)gameTime.TotalGameTime.TotalSeconds >= invlunCooldownFinished) {
 			if (collider.CollisionEntered(enemy.collider, gameTime)) {
 				TakeDamage();
-				Console.WriteLine("damaged by enemy charge");
 				invlunCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + invlunCooldown;
 			}
 	
@@ -72,7 +69,9 @@ public class Player : Sprite
 		Vector2 mousePosition = new Vector2((mouseState.X - ScreenScaling.topLeft.X) / ScreenScaling.scale, 
 			(mouseState.Y - ScreenScaling.topLeft.Y) / ScreenScaling.scale);
 
-		Vector2 line = mousePosition - new Vector2(160, 120);
+		Console.WriteLine(mousePosition);
+
+		Vector2 line = mousePosition - new Vector2(160, 170);
 
 		// Set up the lazer's position and rotation.
 		lazer.CalculatePosition(line);
@@ -138,8 +137,6 @@ public class Player : Sprite
 
 			if (uA > 0 && uA <= 1 && uB > 0 && uB <= 1) intersecting = true;
 		}
-
-		Console.WriteLine(intersecting);
 
 		if (intersecting) enemy.TakeDamage();
 	}
