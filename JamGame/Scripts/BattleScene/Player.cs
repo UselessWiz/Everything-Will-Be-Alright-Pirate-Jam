@@ -69,8 +69,6 @@ public class Player : Sprite
 		Vector2 mousePosition = new Vector2((mouseState.X - ScreenScaling.topLeft.X) / ScreenScaling.scale, 
 			(mouseState.Y - ScreenScaling.topLeft.Y) / ScreenScaling.scale);
 
-		Console.WriteLine(mousePosition);
-
 		Vector2 line = mousePosition - new Vector2(160, 170);
 
 		// Set up the lazer's position and rotation.

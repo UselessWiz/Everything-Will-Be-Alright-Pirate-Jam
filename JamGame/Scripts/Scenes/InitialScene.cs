@@ -18,6 +18,8 @@ public class InitialScene : IScene
 	protected SoundEffect backgroundMusic;
 	private SoundEffectInstance musicPlayer;
 
+	private Effect filmGrainShader;
+
 	public InitialScene(Game1 gameManager)
 	{
 		this.gameManager = gameManager;
@@ -63,13 +65,14 @@ public class InitialScene : IScene
 		LoadContent();
 
 		musicPlayer = backgroundMusic.CreateInstance();
-		//musicPlayer.Play();
+		musicPlayer.Play();
 	}
 
 	public void LoadContent()
 	{
 		debugFont = gameManager.Content.Load<SpriteFont>("DebugFont");
 		backgroundMusic = gameManager.Content.Load<SoundEffect>("Audio/CutsceneBGM");
+		filmGrainShader = gameManager.Content.Load<Effect>("Shaders/Film Grain");
 	}
 
 	public void Update(GameTime gameTime)
@@ -87,6 +90,8 @@ public class InitialScene : IScene
 			}
 		}
 
+		filmGrainShader.Parameters["TotalGameTime"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
+
 		// DEBUG ----------------------------------------------------
 		if (KeyboardExtended.KeyPressed(Keys.Space)) {
 			musicPlayer.Stop();
@@ -102,7 +107,7 @@ public class InitialScene : IScene
 		// Clear this buffer.
         gameManager.GraphicsDevice.Clear(Color.CornflowerBlue);
         
-		_spriteBatch.Begin();
+		_spriteBatch.Begin(effect: filmGrainShader);
 		screens[currentScreenIndex].Draw(_spriteBatch);
 		_spriteBatch.End();
 	}
