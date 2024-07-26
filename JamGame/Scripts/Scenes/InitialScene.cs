@@ -25,21 +25,45 @@ public class InitialScene : IScene
 		gameManager.ChangeResolution(new Point(1280, 960));
 
 		this.screens = new CutsceneData[] { // Define them in here
+			new CutsceneData("Backgrounds/Person1", 
+				new string[] {"We might think we're complex, but we're only made up of two parts.", "The first is our soul, the core of our being."}, 
+				new Vector2[] {new Vector2(200, 20), new Vector2(560, 920)}, new Color[] {Color.Black, Color.Black}, 
+				new float[] {2f, 8f, 14f}, gameManager.Content),
+			new CutsceneData("Backgrounds/Person2", 
+				new string[] {"The other is our shadow, a place the light never touches.", "Almost like the soul's negative photo."}, 
+				new Vector2[] {new Vector2(100, 50), new Vector2(550, 920)}, new Color[] {Color.Black, Color.White}, 
+				new float[] {16f, 22f, 28f}, gameManager.Content),
+			new CutsceneData("Backgrounds/MonsterUnderBed", 
+				new string[] {"Shadows are fuelled by fear."}, 
+				new Vector2[] {new Vector2(70, 850)}, new Color[] {Color.White}, 
+				new float[] {30f, 36f}, gameManager.Content),
+			new CutsceneData("Backgrounds/PhoneConnection", 
+				new string[] {"As people connect with others, their souls become closer together.", "So do their shadows."}, 
+				new Vector2[] {new Vector2(110, 90), new Vector2(490, 760)}, new Color[] {Color.White, Color.Black}, 
+				new float[] {38f, 44f, 50f}, gameManager.Content),
 			new CutsceneData("Backgrounds/Hands1", 
 				new string[] {"Eventually, once people connect closely enough with others...", "... their souls and shadows combine."}, 
 				new Vector2[] {new Vector2(90, 100), new Vector2(680, 850)}, new Color[] {Color.Black, Color.Black}, 
-				new float[] {2f, 6f, 10f}, gameManager.Content),
+				new float[] {52f, 58f, 64f}, gameManager.Content),
 			new CutsceneData("Backgrounds/Hands2",
 				new string[] {"On its own, a person's shadow feeds back their own negativity.", 
 					"But when shadows combine, the fears the combined souls share are\namplified beyond the negativity of any one person."},
-				new Vector2[] {new Vector2(40, 120), new Vector2(100, 880)}, new Color[] {Color.Black, Color.White}, 
-				new float[] {12f, 18f, 24f}, gameManager.Content)
+				new Vector2[] {new Vector2(40, 120), new Vector2(100, 880)}, new Color[] {Color.White, Color.White}, 
+				new float[] {66f, 72f, 78f}, gameManager.Content),
+			new CutsceneData("Backgrounds/WrongMerge", 
+				new string[] {"If the wrong people connect, and the wrong fears merge together..."}, 
+				new Vector2[] {new Vector2(90, 420)}, new Color[] {Color.White}, 
+				new float[] {80f, 86f}, gameManager.Content),
+			new CutsceneData("Backgrounds/FEAR MUST CONSUME", 
+				new string[] {" "}, 
+				new Vector2[] {new Vector2(90, 100)}, new Color[] {Color.Black}, 
+				new float[] {88f, 96f}, gameManager.Content)
 		};
 
 		LoadContent();
 
 		musicPlayer = backgroundMusic.CreateInstance();
-		musicPlayer.Play();
+		//musicPlayer.Play();
 	}
 
 	public void LoadContent()
