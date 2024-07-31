@@ -60,7 +60,7 @@ public class Game1 : Game
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new BattleScene(this);//currentScene = new MenuScene(this);
+        currentScene = new MenuScene(this);//currentScene = new MenuScene(this);
 
         base.Initialize();
     }
