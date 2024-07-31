@@ -40,6 +40,7 @@
     <Compile Include="Pages\Index.razor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Scripts\BattleScene\Enemy.cs" />
+    <Compile Include="Scripts\BattleScene\EnemySides.cs" />
     <Compile Include="Scripts\BattleScene\HealthBar.cs" />
     <Compile Include="Scripts\BattleScene\Lazer.cs" />
     <Compile Include="Scripts\BattleScene\Player.cs" />

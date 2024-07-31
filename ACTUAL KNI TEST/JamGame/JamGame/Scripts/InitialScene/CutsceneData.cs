@@ -14,6 +14,7 @@ public class CutsceneData
 
 	public string[] dialogue;
 	public Vector2[] dialoguePositions;
+	public Color[] dialogueColor;
 
 	public float[] dialogueTimings; // This should always be one larger than dialogue; 
 	// index 0 represents the delay between data switching and the first text appearing.
@@ -21,25 +22,27 @@ public class CutsceneData
 
 	public SpriteFont font;
 
-	public CutsceneData(string spriteName, string[] dialogue, Vector2[] dialoguePositions, float[] dialogueTimings, ContentManager contentManager)
+	public CutsceneData(string spriteName, string[] dialogue, Vector2[] dialoguePositions, Color[] dialogueColor, 
+		float[] dialogueTimings, ContentManager contentManager)
 	{
 		this.dialogue = dialogue;
 		this.dialoguePositions = dialoguePositions;
+		this.dialogueColor = dialogueColor;
 		this.dialogueTimings = dialogueTimings;
 
-		this.background = new Sprite(Vector2.Zero, spriteName, contentManager);
+		this.background = new Sprite(new Vector2(640, 480), spriteName, contentManager);
 
 		this.font = contentManager.Load<SpriteFont>("Low Gothic Cutscene");
 	}
 
-	public void Update(GameTime gameTime)
+	public void Update(float sceneTime)
 	{
 		if (currentDialogueIndex >= dialogue.Length) {
 			dataComplete = true;
 			return;
 		}
 
-		if (gameTime.TotalGameTime.TotalSeconds >= dialogueTimings[currentDialogueIndex + 1]) currentDialogueIndex += 1;
+		if (sceneTime >= dialogueTimings[currentDialogueIndex + 1]) currentDialogueIndex += 1;
 	}
 
 	public void Draw(SpriteBatch _spriteBatch)
@@ -50,7 +53,7 @@ public class CutsceneData
 	public void DrawUI(SpriteBatch _spriteBatch)
 	{
 		if (currentDialogueIndex > -1 && currentDialogueIndex < dialogue.Length) {
-			_spriteBatch.DrawString(font, $"{dialogue[currentDialogueIndex]}", dialoguePositions[currentDialogueIndex], Color.Black);
+			_spriteBatch.DrawString(font, $"{dialogue[currentDialogueIndex]}", dialoguePositions[currentDialogueIndex], dialogueColor[currentDialogueIndex]);
 		}
 	}
 }

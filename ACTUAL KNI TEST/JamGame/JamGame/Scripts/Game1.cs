@@ -37,7 +37,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // Set the window size.
-        Globals.windowSize = new Point(320, 240);
+        Globals.windowSize = new Point(1280, 960);
         _graphics.PreferredBackBufferWidth = 1280;
         _graphics.PreferredBackBufferHeight = 960;
         _graphics.IsFullScreen = false;
@@ -87,8 +87,6 @@ public class Game1 : Game
             Exit();
         }
 
-        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, Globals.windowSize);
-
         KeyboardExtended.SetState();
 
         // Perform all game update logic
@@ -119,7 +117,7 @@ public class Game1 : Game
 
         // Prepare for scaling, then draw debug info above the render target at native resolution.
         _spriteBatch.Draw(mainRenderTarget, upscaledDrawTarget, Color.White);
-        currentScene.DrawDebug(gameTime);
+        //currentScene.DrawDebug(gameTime);
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -128,5 +126,13 @@ public class Game1 : Game
     public void SwitchScene(IScene scene)
     {
         currentScene = scene;
+    }
+
+    public void ChangeResolution(Point windowSize)
+    {
+        Globals.windowSize = windowSize;
+        mainRenderTarget = new RenderTarget2D(GraphicsDevice, windowSize.X, windowSize.Y,
+            false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
+        upscaledDrawTarget = ScreenScaling.ChangeResolution(_graphics, windowSize);
     }
 }
