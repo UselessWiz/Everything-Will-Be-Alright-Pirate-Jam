@@ -131,7 +131,6 @@ public class BattleScene : IScene
 		sceneTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 		if (!bossDefeated) {
-			if (KeyboardExtended.KeyPressed(Keys.Space)) BossKilled();
 			player.Update(gameTime);
 			enemy.Update(gameTime);
 			lazer.Update(gameTime);
