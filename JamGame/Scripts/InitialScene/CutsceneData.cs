@@ -35,14 +35,14 @@ public class CutsceneData
 		this.font = contentManager.Load<SpriteFont>("Low Gothic Cutscene");
 	}
 
-	public void Update(GameTime gameTime)
+	public void Update(float sceneTime)
 	{
 		if (currentDialogueIndex >= dialogue.Length) {
 			dataComplete = true;
 			return;
 		}
 
-		if (gameTime.TotalGameTime.TotalSeconds >= dialogueTimings[currentDialogueIndex + 1]) currentDialogueIndex += 1;
+		if (sceneTime >= dialogueTimings[currentDialogueIndex + 1]) currentDialogueIndex += 1;
 	}
 
 	public void Draw(SpriteBatch _spriteBatch)

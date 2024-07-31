@@ -20,6 +20,8 @@ public class InitialScene : IScene
 
 	private Effect filmGrainShader;
 
+	public float sceneTime = 0;
+
 	public InitialScene(Game1 gameManager)
 	{
 		this.gameManager = gameManager;
@@ -59,7 +61,7 @@ public class InitialScene : IScene
 			new CutsceneData("Backgrounds/FEAR MUST CONSUME", 
 				new string[] {" "}, 
 				new Vector2[] {new Vector2(90, 100)}, new Color[] {Color.Black}, 
-				new float[] {88f, 96f}, gameManager.Content)
+				new float[] {88f, 92f}, gameManager.Content)
 		};
 
 		LoadContent();
@@ -71,13 +73,15 @@ public class InitialScene : IScene
 	public void LoadContent()
 	{
 		debugFont = gameManager.Content.Load<SpriteFont>("DebugFont");
-		backgroundMusic = gameManager.Content.Load<SoundEffect>("Audio/CutsceneBGM");
+		backgroundMusic = gameManager.Content.Load<SoundEffect>("Audio/Cutscene");
 		filmGrainShader = gameManager.Content.Load<Effect>("Shaders/Film Grain");
 	}
 
 	public void Update(GameTime gameTime)
 	{
-		screens[currentScreenIndex].Update(gameTime);
+		sceneTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+		screens[currentScreenIndex].Update(sceneTime);
 
 		if (screens[currentScreenIndex].dataComplete == true) {
 			currentScreenIndex += 1;

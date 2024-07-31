@@ -60,7 +60,7 @@ public class Game1 : Game
         Globals.graphicsDevice = GraphicsDevice;
         
         // Initialise the starting scene.
-        currentScene = new MenuScene(this);//currentScene = new MenuScene(this);
+        currentScene = new BattleScene(this);//currentScene = new MenuScene(this);
 
         base.Initialize();
     }
@@ -116,7 +116,7 @@ public class Game1 : Game
 
         // Prepare for scaling, then draw debug info above the render target at native resolution.
         _spriteBatch.Draw(mainRenderTarget, upscaledDrawTarget, Color.White);
-        currentScene.DrawDebug(gameTime);
+        //currentScene.DrawDebug(gameTime); NO NEED TO DRAW DEBUG IN A FINAL GAME
         _spriteBatch.End();
 
         base.Draw(gameTime);

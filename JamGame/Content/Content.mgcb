@@ -13,11 +13,53 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Audio/CutsceneBGM.wav
+#begin Audio/Cutscene.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/CutsceneBGM.wav
+/build:Audio/Cutscene.wav
+
+#begin Audio/Everything Will Be Alright.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Everything Will Be Alright.wav
+
+#begin Audio/Everything Will Be Consumed.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Everything Will Be Consumed.wav
+
+#begin Audio/SFX/Boss Hurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Boss Hurt.wav
+
+#begin Audio/SFX/Lazer Charge.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Lazer Charge.wav
+
+#begin Audio/SFX/Lazer Shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Lazer Shoot.wav
+
+#begin Audio/SFX/Menu Click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Menu Click.wav
+
+#begin Audio/SFX/Player Hurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/Player Hurt.wav
 
 #begin Backgrounds/FEAR MUST CONSUME.png
 /importer:TextureImporter
@@ -54,6 +96,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Backgrounds/Hands2.png
+
+#begin Backgrounds/Menu.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/Menu.png
 
 #begin Backgrounds/MonsterUnderBed.png
 /importer:TextureImporter
@@ -135,6 +189,13 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Gothic Pixels Title.spritefont
+
+#begin Low Gothic Battle.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Low Gothic Battle.spritefont
 
 #begin Low Gothic Cutscene.spritefont
 /importer:FontDescriptionImporter

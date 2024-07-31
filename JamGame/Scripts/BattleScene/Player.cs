@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using Engine.Core;
 using Engine.Global;
 
@@ -51,13 +52,13 @@ public class Player : Sprite
 
 		if ((float)gameTime.TotalGameTime.TotalSeconds >= invlunCooldownFinished) {
 			if (collider.CollisionEntered(enemy.collider, gameTime)) {
-				TakeDamage();
+				TakeDamage(gameTime);
 				invlunCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + invlunCooldown;
 			}
 	
 			for (int i = 0; i < enemy.spines.Count; i++) {
 				if (collider.CollisionEntered(enemy.spines[i].collider, gameTime)) {
-					TakeDamage();
+					TakeDamage(gameTime);
 					invlunCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + invlunCooldown;
 				}
 			}
@@ -76,7 +77,9 @@ public class Player : Sprite
 
 		// Make sure charging doesn't happen all the time, reset visuals of charging.
 		if ((mouseState.LeftButton == ButtonState.Released || direction != Vector2.Zero) && chargingAttack) {
+			attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + attackCooldown;
 			chargingAttack = false;
+			scene.lazerChargeInstance.Stop();
 			uniformLazerStrength = 0f;
 		}
 
@@ -85,6 +88,7 @@ public class Player : Sprite
 			(float)gameTime.TotalGameTime.TotalSeconds >= attackCooldownFinished) {
 			attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + attackCooldown;
 			chargingAttack = true;
+			scene.lazerChargeInstance.Play();
 		}
 
 		// If the player is charging an attack, increase the charge color strength (this is used as a uniform).
@@ -93,6 +97,7 @@ public class Player : Sprite
 
 			if (uniformLazerStrength >= 1f) {
 				Attack(line);
+				scene.lazerShoot.Play();
 				chargingAttack = false;
 				uniformLazerStrength = 0f;
 			}
@@ -136,11 +141,24 @@ public class Player : Sprite
 			if (uA > 0 && uA <= 1 && uB > 0 && uB <= 1) intersecting = true;
 		}
 
-		if (intersecting) enemy.TakeDamage();
+		if (intersecting) {
+			enemy.TakeDamage();
+			scene.bossHurt.Play();
+		}
 	}
 
-	public void TakeDamage()
+	public void TakeDamage(GameTime gameTime)
 	{
+		scene.playerHurt.Play();
+		
+		// Stop lazer if charging
+		if (chargingAttack) {
+			attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + attackCooldown;
+			chargingAttack = false;
+			scene.lazerChargeInstance.Stop();
+			uniformLazerStrength = 0f;
+		}
+		
 		scene.lightStrength = scene.lightStrength * 0.75f;
 
 		if (scene.lightStrength < 0.5f) scene.lightStrength = 0.5f; // TEST THIS NUMBER.

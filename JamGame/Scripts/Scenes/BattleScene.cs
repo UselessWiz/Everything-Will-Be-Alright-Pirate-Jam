@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using Engine.Global;
 using Engine.Animations;
 using System;
@@ -34,9 +35,33 @@ public class BattleScene : IScene
 
 	private AnimationClip finalHealthBarAnimation;
 
+	private float endTextTimer = 0;
+	public SpriteFont bossFont;
+	private string[] bossFinalText;
+	private Vector2[] bossFinalTextPositions;
+	private int bossFinalTextIndex = 0;
+	private bool finalHealthBarAnimPlaying = false;
+
+	private bool musicPlayed = false;
+
+	private string[] endText;
+	private int endTextIndex = -1;
+	private bool endTextShowing = false;
+
 	private bool bossDefeated = false;
 
 	public float sceneTime;
+
+	private SoundEffect battleMusic;
+	private SoundEffectInstance battleMusicInstance;
+
+	private SoundEffect endingMusic;
+
+	public SoundEffect lazerCharge;
+	public SoundEffectInstance lazerChargeInstance;
+	public SoundEffect lazerShoot;
+	public SoundEffect playerHurt;
+	public SoundEffect bossHurt;
 
 	public BattleScene(Game1 gameManager)
 	{
@@ -70,34 +95,84 @@ public class BattleScene : IScene
 		PrepareFinalHealthBars();
 
 		LoadContent();
+
+		bossFinalText = new string[] {"You're a fool if you\nthink you've won.", 
+			"Your hope isn't enough to\nstop these shadows combined...", "FEAR MUST CONSUME!"};
+		bossFinalTextPositions = new Vector2[] {new Vector2(80, 100), new Vector2(40, 40), 
+			new Vector2(74, 110)};
+		endText = new string[] {"Don't let your light burn out", "Don't let the shadows consume you", 
+			"Don't forget that"};
 	}
 
 	public void LoadContent()
 	{
 		debugFont = gameManager.Content.Load<SpriteFont>("DebugFont");
+		bossFont = gameManager.Content.Load<SpriteFont>("Low Gothic Battle");
 		lightShader = gameManager.Content.Load<Effect>("Shaders/Arena Lighting");
 		lazerShader = gameManager.Content.Load<Effect>("Shaders/Lazer");
+		
+		battleMusic = gameManager.Content.Load<SoundEffect>("Audio/Everything Will Be Consumed");
+		battleMusicInstance = battleMusic.CreateInstance();
+		battleMusicInstance.IsLooped = true;
+		battleMusicInstance.Play();
+
+		lazerCharge = gameManager.Content.Load<SoundEffect>("Audio/SFX/Lazer Charge");
+		lazerChargeInstance = lazerCharge.CreateInstance();
+		lazerShoot = gameManager.Content.Load<SoundEffect>("Audio/SFX/Lazer Shoot");
+		playerHurt = gameManager.Content.Load<SoundEffect>("Audio/SFX/Player Hurt");
+		bossHurt = gameManager.Content.Load<SoundEffect>("Audio/SFX/Boss Hurt");
+
+		endingMusic = gameManager.Content.Load<SoundEffect>("Audio/Everything Will Be Alright");
 	}
 
 	public void Update(GameTime gameTime)
 	{
+		sceneTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
 		if (!bossDefeated) {
+			if (KeyboardExtended.KeyPressed(Keys.Space)) BossKilled();
 			player.Update(gameTime);
 			enemy.Update(gameTime);
 			lazer.Update(gameTime);
 
 			camera.position = player.position + new Vector2(0, -50);
 			camera.Update(gameTime);
-
-			if (KeyboardExtended.KeyPressed(Keys.Space)) player.TakeDamage();
 		}
 
 		else {
-			finalHealthBarAnimation.Update(gameTime);
+			if (finalHealthBarAnimPlaying) {
+				finalHealthBarAnimation.Update(gameTime);
+				if (sceneTime >= endTextTimer) {
+					if (!musicPlayed) {
+						endingMusic.Play();
+						musicPlayed = true;
+						endTextTimer += 5;
+					}
+					else {
+						endTextShowing = true;
+						endTextIndex += 1;
+
+						endTextTimer += 14.3f;
+						if (endTextIndex == endText.Length - 1) endTextTimer  = 5000000000000000f;
+					}
+				}
+			}
 
 			for (int i = 0; i < 49; i++) {
 				finalHealthBars[i].currentValue = (int)finalHealthBarAnimation.values[i];
 				finalHealthBars[i].currentSprite = finalHealthBars[i].ChangeHealthBarValue(finalHealthBars[i].currentValue);
+			}
+
+			if (sceneTime >= endTextTimer) {
+				playerHurt.Play();
+				endTextTimer += 5f;
+				bossFinalTextIndex += 1;
+
+				// Yeah yeah this is really really bad code theres only 2 days to go and i don't give a fuck anymore.
+				if (bossFinalTextIndex == bossFinalText.Length) {
+					finalHealthBarAnimation.playing = true;
+					finalHealthBarAnimPlaying = true;
+				}
 			}
 		}
 	}
@@ -108,22 +183,7 @@ public class BattleScene : IScene
 		List<Spine> spines = enemy.spines;
 
 		// Clear this buffer.
-		gameManager.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
         gameManager.GraphicsDevice.Clear(Color.Black);
-
-        // Draw the enemy
-        _spriteBatch.Begin(transformMatrix: camera.translation);
-        enemy.Draw(_spriteBatch);
-        for (int i = 0; i < enemy.sides.Length; i++) {
-			enemy.sides[i].Draw(_spriteBatch);
-		}
-        _spriteBatch.End();
-
-        // Prepare the lazer shader and draw the lazer using it.
-        lazerShader.Parameters["LazerStrength"].SetValue(player.uniformLazerStrength);
-        _spriteBatch.Begin(transformMatrix: camera.translation, effect: lazerShader);
-        lazer.Draw(_spriteBatch);
-        _spriteBatch.End();
 
         // Draw the player and spines. They use the same effects (base sprite).
         _spriteBatch.Begin(transformMatrix: camera.translation);
@@ -161,12 +221,29 @@ public class BattleScene : IScene
             	gameManager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 2);
         	}
         }
+
+        gameManager.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
+
+        // Draw the enemy
+        _spriteBatch.Begin(transformMatrix: camera.translation);
+        enemy.Draw(_spriteBatch);
+        for (int i = 0; i < enemy.sides.Length; i++) {
+			enemy.sides[i].Draw(_spriteBatch);
+		}
+        _spriteBatch.End();
+
+        // Prepare the lazer shader and draw the lazer using it.
+        lazerShader.Parameters["LazerStrength"].SetValue(player.uniformLazerStrength);
+        _spriteBatch.Begin(transformMatrix: camera.translation, effect: lazerShader);
+        lazer.Draw(_spriteBatch);
+        _spriteBatch.End();
 	}
 
 	public void DrawUI(SpriteBatch _spriteBatch)
 	{
 		_spriteBatch.Begin();
 		bossHealthBar.DrawUI(_spriteBatch);
+		enemy.DrawUI(_spriteBatch);
 		_spriteBatch.End();
 
 		if (!bossDefeated) return;
@@ -187,6 +264,23 @@ public class BattleScene : IScene
 		foreach (HealthBar bar in finalHealthBars) {
 			if (!bar.drawn) {
 				bar.DrawUI(_spriteBatch);
+			}
+		}
+
+		if (!finalHealthBarAnimPlaying) {
+			_spriteBatch.DrawString(bossFont, bossFinalText[bossFinalTextIndex], bossFinalTextPositions[bossFinalTextIndex], Color.Magenta);
+		}
+
+		if (endTextShowing) {
+			if (endTextIndex < endText.Length - 1) {
+				_spriteBatch.DrawString(bossFont, endText[endTextIndex], new Vector2((180 - bossFont.MeasureString(endText[endTextIndex]).X / 2) - 20, 
+					(120 - bossFont.MeasureString(endText[endTextIndex]).Y / 2) - 10), Color.White);
+			}
+			else {
+				_spriteBatch.DrawString(bossFont, endText[endTextIndex], new Vector2((180 - bossFont.MeasureString(endText[endTextIndex]).X / 2) - 20, 
+					(120 - bossFont.MeasureString(endText[endTextIndex]).Y / 2) - 10), Color.White);
+				_spriteBatch.DrawString(bossFont, "Everything Will Be Alright", new Vector2((180 - bossFont.MeasureString(endText[endTextIndex]).X / 2) - 54, 
+					(120 - bossFont.MeasureString(endText[endTextIndex]).Y / 2) + 10), Color.White);
 			}
 		}
 
@@ -232,6 +326,8 @@ public class BattleScene : IScene
     public void BossKilled()
     {
     	bossDefeated = true;
-    	finalHealthBarAnimation.playing = true;
+    	battleMusicInstance.Stop();
+    	endTextTimer = sceneTime + 5f;
+    	playerHurt.Play();
     }
 }
