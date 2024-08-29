@@ -27,12 +27,13 @@ public class EnemySides : Sprite
 
 	public void Update(GameTime gameTime)
 	{
-		if (enemy.charging && enemy.health <= 3) {
+		if (enemy.charging && enemy.health <= 8) {
 			position += direction * enemy.speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 		}
 		else if (enemy.charging) {
 			Random random = new Random();
-			position = enemy.screenOffset + enemy.scene.camera.position + offset + new Vector2(random.Next(-1, 1), random.Next(-1, 1));
+			position = enemy.screenOffset + enemy.scene.camera.position + offset + new Vector2(150 * (float)Math.Cos(gameTime.TotalGameTime.TotalSeconds + MathHelper.Pi),
+                10 * (float)Math.Sin((2 * gameTime.TotalGameTime.TotalSeconds + MathHelper.Pi) / 2)) + new Vector2(random.Next(-1, 1), random.Next(-1, 1));
 		}
 		else {
 			Random random = new Random();

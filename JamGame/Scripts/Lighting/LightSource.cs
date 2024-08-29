@@ -17,7 +17,6 @@ public class LightSource : Transform
 
 	public void Draw(Effect lightShader)
 	{
-		Console.WriteLine(position);
 	}
 
 	// CHANGE THE SHADER

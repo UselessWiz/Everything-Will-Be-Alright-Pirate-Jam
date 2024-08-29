@@ -25,8 +25,7 @@ public class ScreenScaling
 
     public static Point BestRenderTargetDrawLocation(GraphicsDevice graphicsDevice, Point bestResolution)
     {
-        topLeft = new Point((graphicsDevice.Adapter.CurrentDisplayMode.Width - bestResolution.X) / 2, 
-            (graphicsDevice.Adapter.CurrentDisplayMode.Height - bestResolution.Y) / 2);
+        topLeft = new Point(0, 0);
         return topLeft;
     }
 
