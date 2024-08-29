@@ -1,5 +1,5 @@
 using Microsoft.Xna.Framework;
-using Engine.Core;
+using System;
 
 namespace Engine.Animations;
 
@@ -32,6 +32,8 @@ public class Animation
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.animLength = animLength;
+
+		ProcessAnimation();
 	}
 
 	public void UpdateAnimation(GameTime gameTime) // Processes all the updates, then returns what the value of the animation is.
@@ -46,12 +48,7 @@ public class Animation
 
 		animTime = currentTime / animLength;
 
-		switch (curve) {
-			case AnimationCurve.LINEAR: 
-				currentValue = minValue + (maxValue - minValue) * animTime; 
-				break;
-			//case AnimationCurve.SQUARED:
-		}
+		ProcessAnimation();
 
 		clip.values[valueID] = currentValue;
 	}
@@ -62,5 +59,18 @@ public class Animation
 		currentValue = minValue;
 		animTime = 0;
 		playing = false;
+
+		ProcessAnimation();
+		Console.WriteLine($"minValue is {minValue} and clip.values[0] is {clip.values[valueID]}");
+	}
+
+	private void ProcessAnimation()
+	{
+		switch (curve) {
+			case AnimationCurve.LINEAR: 
+				currentValue = minValue + (maxValue - minValue) * animTime; 
+				break;
+			//case AnimationCurve.SQUARED:
+		}
 	}
 }

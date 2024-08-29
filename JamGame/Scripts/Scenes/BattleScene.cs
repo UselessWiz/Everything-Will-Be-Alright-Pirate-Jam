@@ -29,6 +29,7 @@ public class BattleScene : IScene
 	public float lightStrength = 20f;
 
 	private Effect lazerShader;
+	private Effect bossHitShader;
 
 	private HealthBar bossHealthBar;
 	private HealthBar[] finalHealthBars;
@@ -77,17 +78,17 @@ public class BattleScene : IScene
 		this.camera = new Camera();
 
 		this.lights = new LightSource[] {
-			new LightSource(new Vector2(50, 10), 1f),
-			new LightSource(new Vector2(50, 230), 1f),
-			new LightSource(new Vector2(270, 10), 1f),
-			new LightSource(new Vector2(270, 230), 1f)
+			new LightSource(new Vector2(50, -40), 1f),
+			new LightSource(new Vector2(50, 180), 1f),
+			new LightSource(new Vector2(270, -40), 1f),
+			new LightSource(new Vector2(270, 180), 1f)
 		};
 
 		this.screenRectVertices = new VertexPosition[] {
         	new VertexPosition(new Vector3(-Globals.windowSize.X / 2, -Globals.windowSize.Y / 2, 0)), 
-        	new VertexPosition(new Vector3(Globals.windowSize.X / 2, -Globals.windowSize.Y / 2, 0)), 
-			new VertexPosition(new Vector3(Globals.windowSize.X / 2, Globals.windowSize.Y / 2, 0)), 
-			new VertexPosition(new Vector3(-Globals.windowSize.X / 2, Globals.windowSize.Y / 2, 0))
+        	new VertexPosition(new Vector3( Globals.windowSize.X / 2, -Globals.windowSize.Y / 2, 0)), 
+			new VertexPosition(new Vector3( Globals.windowSize.X / 2,  Globals.windowSize.Y / 2, 0)), 
+			new VertexPosition(new Vector3(-Globals.windowSize.X / 2,  Globals.windowSize.Y / 2, 0))
 		};
 
 		this.indices = new short[] {0, 1, 2, 0, 2, 3};
@@ -96,12 +97,12 @@ public class BattleScene : IScene
 
 		LoadContent();
 
-		bossFinalText = new string[] {"You're a fool if you\nthink you've won.", 
-			"Your hope isn't enough to\nstop these shadows combined...", "FEAR MUST CONSUME!"};
-		bossFinalTextPositions = new Vector2[] {new Vector2(80, 100), new Vector2(40, 40), 
-			new Vector2(74, 110)};
-		endText = new string[] {"Don't let your light burn out", "Don't let the shadows consume you", 
-			"Don't forget that"};
+		bossFinalText = ["You're a fool if you\nthink you've won.", 
+			"Your hope isn't enough to\nstop these shadows combined...", "FEAR MUST CONSUME!"];
+		bossFinalTextPositions = [new Vector2(80, 100), new Vector2(40, 40), 
+			new Vector2(74, 110)];
+		endText = ["Don't let your light burn out", "Don't let the shadows consume you", 
+			"Don't forget that"];
 	}
 
 	public void LoadContent()
@@ -110,6 +111,7 @@ public class BattleScene : IScene
 		bossFont = gameManager.Content.Load<SpriteFont>("Low Gothic Battle");
 		lightShader = gameManager.Content.Load<Effect>("Shaders/Arena Lighting");
 		lazerShader = gameManager.Content.Load<Effect>("Shaders/Lazer");
+		bossHitShader = gameManager.Content.Load<Effect>("Shaders/Boss Hit");
 		
 		battleMusic = gameManager.Content.Load<SoundEffect>("Audio/Everything Will Be Consumed");
 		battleMusicInstance = battleMusic.CreateInstance();
@@ -225,7 +227,8 @@ public class BattleScene : IScene
         gameManager.GraphicsDevice.BlendState = BlendState.NonPremultiplied;
 
         // Draw the enemy
-        _spriteBatch.Begin(transformMatrix: camera.translation);
+		bossHitShader.Parameters["hitStrength"].SetValue(enemy.hitAnimation.values[0]);
+        _spriteBatch.Begin(transformMatrix: camera.translation,effect: bossHitShader);
         enemy.Draw(_spriteBatch);
         for (int i = 0; i < enemy.sides.Length; i++) {
 			enemy.sides[i].Draw(_spriteBatch);

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using Engine.Global;
 
 namespace JamGame;
@@ -116,7 +115,7 @@ public class Game1 : Game
 
         // Prepare for scaling, then draw debug info above the render target at native resolution.
         _spriteBatch.Draw(mainRenderTarget, upscaledDrawTarget, Color.White);
-        //currentScene.DrawDebug(gameTime); NO NEED TO DRAW DEBUG IN A FINAL GAME
+        currentScene.DrawDebug(gameTime); // NO NEED TO DRAW DEBUG IN A FINAL GAME
         _spriteBatch.End();
 
         base.Draw(gameTime);

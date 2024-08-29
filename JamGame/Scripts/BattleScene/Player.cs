@@ -1,8 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
-using Engine.Core;
 using Engine.Global;
 
 namespace JamGame;
@@ -17,7 +15,8 @@ public class Player : Sprite
 	private Enemy enemy;
 
 	public float speed = 200f;
-	public float uniformLazerStrength = 0f;
+	private float rawLazerStrength = 0f; // This is the time between 0 and 1 that the lazer takes to charge
+	public float uniformLazerStrength = 0f; // This is the scaled time, based on a sqrt function.
 
 	public bool chargingAttack = false;
 
@@ -43,13 +42,23 @@ public class Player : Sprite
 
 	public void Update(GameTime gameTime)
 	{
+		// Movement Code.
 		Vector2 direction = GetDirection();
+		Vector2 oldPosition = position; // Stop the player from getting completely stuck if they go outside of the arena
+		
 		if (direction != Vector2.Zero) Vector2.Normalize(direction);
-
 		position += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+		// If the player would move outside of a 320 unit radius from the centre of the arena, don't move.
+		if (Math.Sqrt(Math.Pow(position.X, 2) + Math.Pow(position.Y + 50, 2)) > 320) {
+			Console.WriteLine(position);
+			position = oldPosition;
+			Console.WriteLine(position);
+		}
 
 		collider.UpdateCollider();
 
+		// Cycle through the enemy/enemy projectiles and do collision checks.
 		if ((float)gameTime.TotalGameTime.TotalSeconds >= invlunCooldownFinished) {
 			if (collider.CollisionEntered(enemy.collider, gameTime)) {
 				TakeDamage(gameTime);
@@ -76,11 +85,15 @@ public class Player : Sprite
 		lazer.CalculatePosition(line);
 
 		// Make sure charging doesn't happen all the time, reset visuals of charging.
+		// All of this code could be set up a little more neatly into a formal state machine, but who cares about best practices?
+		// Actually, me next week cares. a lot. because me next week wont be able to read it otherwise 
+		// (this ones not too bad but some of the other things i've seen...)
 		if ((mouseState.LeftButton == ButtonState.Released || direction != Vector2.Zero) && chargingAttack) {
 			attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + attackCooldown;
 			chargingAttack = false;
 			scene.lazerChargeInstance.Stop();
 			uniformLazerStrength = 0f;
+			rawLazerStrength = 0f;
 		}
 
 		// Check to start charging
@@ -93,13 +106,15 @@ public class Player : Sprite
 
 		// If the player is charging an attack, increase the charge color strength (this is used as a uniform).
 		if (chargingAttack) {
-			uniformLazerStrength += (float)gameTime.ElapsedGameTime.TotalSeconds; // This will take one second to charge.
+			rawLazerStrength += (float)gameTime.ElapsedGameTime.TotalSeconds;
+			uniformLazerStrength = 4 * (float)Math.Pow(rawLazerStrength - 0.5f, 3) + 0.5f; // This will take one second to charge.
 
 			if (uniformLazerStrength >= 1f) {
 				Attack(line);
 				scene.lazerShoot.Play();
 				chargingAttack = false;
 				uniformLazerStrength = 0f;
+				rawLazerStrength = 0f;
 			}
 		}
 	}

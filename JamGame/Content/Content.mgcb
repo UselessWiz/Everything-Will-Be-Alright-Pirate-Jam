@@ -217,6 +217,12 @@
 /processorParam:DebugMode=Auto
 /build:Shaders/Arena Lighting.fx
 
+#begin Shaders/Boss Hit.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/Boss Hit.fx
+
 #begin Shaders/Film Grain.fx
 /importer:EffectImporter
 /processor:EffectProcessor

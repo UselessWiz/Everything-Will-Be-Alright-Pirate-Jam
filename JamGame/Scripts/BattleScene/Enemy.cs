@@ -1,11 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections;
 using System.Collections.Generic;
 using Engine.Core;
 using Engine.Global;
+using Engine.Animations;
 
 namespace JamGame;
 
@@ -35,6 +34,9 @@ public class Enemy : Sprite
 	private int battleTextIndex = -1;
 	private float battleTextTimer = 0;
 
+	public AnimationClip hitAnimation;
+	//private bool hitAnimationPlaying;
+
 	public Enemy(BattleScene scene, HealthBar healthBar, ContentManager contentManager) : base(Vector2.Zero, "Sprite/Enemy", contentManager)
 	{
 		this.scene = scene;
@@ -49,8 +51,12 @@ public class Enemy : Sprite
 
 		this.battleText = new string[] {"You're too weak to\nfight this battle", "Don't even try, it's not worth losing.", 
 			"This won't work out for you", "Run away. It's your only chance", "You can't win this, no matter\nhow strong you think you are."};
+
+		this.hitAnimation = new AnimationClip(1, new float[]{ 0 }, new Animation[][] {[new Animation(0, 1, 5, 0.2f)]}, 0.21f, false);
 	}	
 
+	// Nice comments. real easy to see exactly whats going on at a glance.
+	// hope whoever reads this gets a laugh.
 	public void Update(GameTime gameTime)
 	{
 		Random random = new Random();
@@ -82,6 +88,8 @@ public class Enemy : Sprite
 
 			if (i >= spines.Count - 1) break;
 		}
+
+		hitAnimation.Update(gameTime);
 	}
 
 	private void Attack(GameTime gameTime)
@@ -152,6 +160,9 @@ public class Enemy : Sprite
 
 	public void TakeDamage()
 	{
+		// Play relevant animation
+		hitAnimation.playing = true;
+
 		health -= 1;
 		healthBar.currentValue -= 25;
 		healthBar.currentSprite = healthBar.ChangeHealthBarValue(healthBar.currentValue);
@@ -164,10 +175,5 @@ public class Enemy : Sprite
 		if (health == 0) {
 			scene.BossKilled();
 		}
-	}
-
-	private Vector2 GetDirection()
-	{
-		return Vector2.Zero;
 	}
 }

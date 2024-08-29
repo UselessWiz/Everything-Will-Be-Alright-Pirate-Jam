@@ -63,14 +63,13 @@ public class AnimationClip
 
 		// Check if the animation is completed, and handle looping or stopping.
 		if (currentTime >= animLength) {
-			if (loop) {
-				ResetAnimation();
-			}
-			else {
-				currentTime = 1;
-				playing = false;
-			}
-		}
+			ResetAnimation();
+            if (!loop) {
+                currentTime = 1;
+                playing = false;
+				return;
+            }
+        }
 
 		animTime = currentTime / animLength;
 
@@ -115,6 +114,9 @@ public class AnimationClip
 				keyframe[i].ResetAnimation();
 			}
 		}
+
+		activeAnimations.Clear();
+		completedAnimations.Clear();
 	}
 
 	// Each animation has a valueID, which updates the relevant value in the animation clip. This returns the current value of that ID.
