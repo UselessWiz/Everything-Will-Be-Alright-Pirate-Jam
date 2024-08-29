@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Engine.Core;
 using Engine.Global;
 using Engine.Animations;
 using System;
@@ -132,7 +133,6 @@ public class BattleScene : IScene
 		sceneTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 		if (!bossDefeated) {
-			if (KeyboardExtended.KeyPressed(Keys.Space)) BossKilled();
 			player.Update(gameTime);
 			enemy.Update(gameTime);
 			lazer.Update(gameTime);

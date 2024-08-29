@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
 using Engine.Global;
+using Engine.Core;
 
 namespace JamGame;
 
@@ -95,15 +96,6 @@ public class InitialScene : IScene
 		}
 
 		filmGrainShader.Parameters["TotalGameTime"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
-
-		// DEBUG ----------------------------------------------------
-		if (KeyboardExtended.KeyPressed(Keys.Space)) {
-			musicPlayer.Stop();
-			BattleScene battleScene = new BattleScene(gameManager);
-			battleScene.sceneTime = (float)gameTime.TotalGameTime.TotalSeconds;
-			gameManager.SwitchScene(battleScene);
-		}
-		// ----------------------------------------------------------
 	}
 
 	public void Draw(SpriteBatch _spriteBatch)

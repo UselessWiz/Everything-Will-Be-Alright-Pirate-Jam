@@ -120,7 +120,7 @@ public class Game1 : Game
 
         // Prepare for scaling, then draw debug info above the render target at native resolution.
         _spriteBatch.Draw(mainRenderTarget, upscaledDrawTarget, Color.White);
-        currentScene.DrawDebug(gameTime);
+        //currentScene.DrawDebug(gameTime);
         _spriteBatch.End();
 
         base.Draw(gameTime);
