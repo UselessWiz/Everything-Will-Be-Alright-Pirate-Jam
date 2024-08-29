@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Engine.Core;
@@ -16,7 +17,7 @@ public class Enemy : Sprite
 	public RectangleCollider collider;
 
 	public float speed = 300f;
-	public int health = 12;
+	public int health = 24;
 	private HealthBar healthBar;
 
 	public Vector2 screenOffset;
@@ -56,7 +57,8 @@ public class Enemy : Sprite
 		Random random = new Random();
 
 		if (!charging) {
-			position = scene.camera.position + screenOffset + new Vector2(random.Next(-1, 1), random.Next(-1, 1));
+			position = scene.camera.position + screenOffset + new Vector2(150 * (float)Math.Cos(gameTime.TotalGameTime.TotalSeconds + MathHelper.Pi), 
+				10 * (float)Math.Sin((2 * gameTime.TotalGameTime.TotalSeconds + MathHelper.Pi) / 2)) + new Vector2(random.Next(-1, 1), random.Next(-1, 1));
 		}
 		else {
 			position += speed * new Vector2(0, 1) * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -105,34 +107,51 @@ public class Enemy : Sprite
 				attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + 2f;
 				break;
 			case 2: // Expanding circle
-				charging = false;
 				attackIndex += 1;
-				attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + 2f;
+				attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + 0.5f;
 				
-				numberOfSpines = (5 + (12 - health));
+				numberOfSpines = (5 + (24 - health));
 
 				for (int i = 0; i < numberOfSpines + 1; i++) { 
 					Vector2 direction = Vector2.Normalize(new Vector2((float)Math.Cos(MathHelper.Pi / 3 + (i * (MathHelper.Pi / 3) / numberOfSpines)),
 						(float)Math.Sin(MathHelper.Pi / 3 + (i * (MathHelper.Pi / 3) / numberOfSpines))));
-					spines.Add(new Spine(this, position + new Vector2(0, 40), direction, 100f + 10 * (health - 6), 
+					spines.Add(new Spine(this, position + new Vector2(0, 40), direction, 100f + 10 * ((health - 24) / 4), 
 						"Sprite/Spine Projectile", scene.gameManager.Content)); 
 				}
 
-				break; 
-			case 3: // Toriel
+				break;
+            case 3: // 2nd Expanding circle
+                attackIndex += 1;
+                attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + 1.5f;
+
+                if (health > 12) break;
+
+                numberOfSpines = (10 + (24 - health));
+
+				// I don't know how this code works lmao
+                for (int i = 0; i < numberOfSpines + 1; i++)
+                {
+                    Vector2 direction = Vector2.Normalize(new Vector2((float)Math.Cos(11 * MathHelper.Pi / 6 + (i * (11 * MathHelper.Pi / 6) / numberOfSpines)),
+                        (float)Math.Sin(11 * MathHelper.Pi / 6 + (i * (11 * MathHelper.Pi / 6) / numberOfSpines))));
+                    spines.Add(new Spine(this, position + new Vector2(0, 40), direction, 100f + 10 * ((24 - health) / 4),
+                        "Sprite/Spine Projectile", scene.gameManager.Content));
+                }
+
+                break;
+            case 4: // Toriel
 				attackIndex = 0;
 				attackCooldownFinished = (float)gameTime.TotalGameTime.TotalSeconds + 3f;
 
-				numberOfSpines = 8 +(12 - health);
+				numberOfSpines = 8 + (24 - health);
 
 				for (int i = 0; i < numberOfSpines; i++) {
-					Vector2 projectilePosition = position + new Vector2(-155, 65 + i * (170 / numberOfSpines));
-					spines.Add(new Spine(this, projectilePosition, Vector2.Normalize(scene.player.position - projectilePosition), 
-						120f + 10 * (health - 6), "Sprite/Spine Projectile Right Facing", scene.gameManager.Content));
+					Vector2 projectilePosition = scene.camera.position + screenOffset + new Vector2(-155, 65 + i * (170 / numberOfSpines));
+					spines.Add(new Spine(this, projectilePosition, Vector2.Normalize(scene.player.position - projectilePosition),
+                        140f + 10 * ((health - 12) / 2), "Sprite/Spine Projectile Right Facing", scene.gameManager.Content));
 
-					projectilePosition = position + new Vector2(155, 65 + i * ((235 - 65) / numberOfSpines));
+					projectilePosition = scene.camera.position + screenOffset + new Vector2(155, 65 + i * ((235 - 65) / numberOfSpines));
 					spines.Add(new Spine(this, projectilePosition, Vector2.Normalize(scene.player.position - projectilePosition), 
-						120f + 10 * (health - 6), "Sprite/Spine Projectile Left Facing", scene.gameManager.Content));
+						140f + 10 * ((health - 12) / 2), "Sprite/Spine Projectile Left Facing", scene.gameManager.Content));
 				}
 
 				break; 
@@ -153,10 +172,10 @@ public class Enemy : Sprite
 	public void TakeDamage()
 	{
 		health -= 1;
-		healthBar.currentValue -= 25;
+		healthBar.currentValue -= 13;
 		healthBar.currentSprite = healthBar.ChangeHealthBarValue(healthBar.currentValue);
 
-		if (health % 2 == 0) {
+		if (health % 4 == 0) {
 			battleTextTimer = scene.sceneTime + 5f;
 			battleTextIndex += 1;
 		}
